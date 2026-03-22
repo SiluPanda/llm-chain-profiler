@@ -3,6 +3,7 @@
 Flame-chart latency profiler for LLM chains.
 
 [![npm version](https://img.shields.io/npm/v/llm-chain-profiler.svg)](https://www.npmjs.com/package/llm-chain-profiler)
+[![npm downloads](https://img.shields.io/npm/dt/llm-chain-profiler.svg)](https://www.npmjs.com/package/llm-chain-profiler)
 [![license](https://img.shields.io/npm/l/llm-chain-profiler.svg)](https://github.com/SiluPanda/llm-chain-profiler/blob/master/LICENSE)
 [![node](https://img.shields.io/node/v/llm-chain-profiler.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)](https://www.typescriptlang.org/)

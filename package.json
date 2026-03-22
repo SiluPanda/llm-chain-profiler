@@ -1,6 +1,6 @@
 {
   "name": "llm-chain-profiler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Flame-chart latency profiler for LLM chains",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
