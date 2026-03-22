@@ -18,17 +18,17 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 
 ## Phase 2: Core Types (src/types.ts)
 
-- [ ] **Define SpanType union type** — Implement the `SpanType` union: `'chain' | 'step' | 'llm-call' | 'streaming' | 'tool-execution' | 'prompt-assembly' | 'post-processing' | 'overhead' | 'custom'`. | Status: not_done
+- [x] **Define SpanType union type** — Implement the `SpanType` union: `'chain' | 'step' | 'llm-call' | 'streaming' | 'tool-execution' | 'prompt-assembly' | 'post-processing' | 'overhead' | 'custom'`. | Status: done
 - [ ] **Define SpanAttributes types** — Implement all attribute interfaces: `ChainAttributes`, `StepAttributes`, `LlmCallAttributes`, `StreamingAttributes`, `ToolExecutionAttributes`, `PromptAssemblyAttributes`, `PostProcessingAttributes`, `OverheadAttributes`, `CustomAttributes`, and the discriminated union `SpanAttributes`. | Status: not_done
-- [ ] **Define Span interface** — Implement the `Span` interface with all fields: `id`, `parentId`, `name`, `type`, `startTime`, `endTime`, `duration`, `attributes`, `children`, `error`. | Status: not_done
-- [ ] **Define Profile interface** — Implement the `Profile` interface with: `id`, `name`, `startTimestamp`, `totalDurationMs`, `rootSpan`, `allSpans`, `metrics`, `version`. | Status: not_done
+- [x] **Define Span interface** — Implement the `Span` interface with all fields: `id`, `parentId`, `name`, `type`, `startTime`, `endTime`, `duration`, `attributes`, `children`, `error`. | Status: done
+- [x] **Define Profile interface** — Implement the `Profile` interface with: `id`, `name`, `startTimestamp`, `totalDurationMs`, `rootSpan`, `allSpans`, `metrics`, `version`. | Status: done
 - [ ] **Define TimingMetrics interface** — Implement `TimingMetrics` with all fields: `totalDurationMs`, `totalLlmCallDurationMs`, `totalToolExecutionDurationMs`, `totalPromptAssemblyDurationMs`, `totalPostProcessingDurationMs`, `totalOverheadDurationMs`, `firstTtftMs`, `averageTps`, `totalInputTokens`, `totalOutputTokens`, `llmCallCount`, `toolExecutionCount`, `percentageByType`. | Status: not_done
 - [ ] **Define FlameChartData interface** — Implement `FlameChartData` with `speedscope` (SpedscopeProfile) and `chromeTrace` (ChromeTraceEvent[]) fields. Define supporting types for speedscope evented profile format and Chrome trace event format. | Status: not_done
 - [ ] **Define ProfilerOptions interface** — Implement `ProfilerOptions` with: `name`, `enabled`, `clockMode`, `computeOverhead`, `minSpanDurationMs`, `recordChunkTimeline`, `otlp`. | Status: not_done
 - [ ] **Define OtlpExportOptions interface** — Implement with `endpoint`, `headers`, `serviceName`. | Status: not_done
-- [ ] **Define SpanOptions interface** — Implement with `type`, `parentId`, `attributes`. | Status: not_done
-- [ ] **Define SpanEndOptions interface** — Implement with `attributes`, `error`. | Status: not_done
-- [ ] **Define ActiveSpan interface** — Implement with `id`, `name`, `end()`, `setTTFT()`, `addAttributes()`. | Status: not_done
+- [x] **Define SpanOptions interface** — Implement with `type`, `parentId`, `attributes`. | Status: done
+- [x] **Define SpanEndOptions interface** — Implement with `attributes`, `error`. | Status: done
+- [x] **Define ActiveSpan interface** — Implement with `id`, `name`, `end()`, `setTTFT()`, `addAttributes()`. | Status: done
 - [ ] **Define InstrumentOptions interface** — Implement with `capturePromptAssembly`, `captureModel`, `captureTokens`, `spanName`. | Status: not_done
 - [ ] **Define ReportOptions interface** — Implement with `output`, `color`, `verbosity`, `showOverhead`, `minDurationMs`. | Status: not_done
 - [ ] **Define Profiler interface** — Implement the full `Profiler` interface with all method signatures: `span()`, `startSpan()`, `instrument()`, `getProfile()`, `report()`, `toFlameChart()`, `toJSON()`, `exportOtlp()`, `reset()`, `enable()`, `disable()`, `isEnabled()`, `setAsActive()`. | Status: not_done
@@ -38,8 +38,8 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 
 ## Phase 3: Clock Abstraction (src/clock.ts)
 
-- [ ] **Implement performance.now() clock mode** — Export a `now()` function that returns `performance.now()` as the default clock. | Status: not_done
-- [ ] **Implement hrtime clock mode** — Implement an alternative `now()` that uses `process.hrtime.bigint()` and converts to milliseconds for nanosecond-precision timing. | Status: not_done
+- [x] **Implement performance.now() clock mode** — Export a `now()` function that returns `performance.now()` as the default clock. | Status: done
+- [x] **Implement hrtime clock mode** — Implement an alternative `now()` that uses `process.hrtime.bigint()` and converts to milliseconds for nanosecond-precision timing. | Status: done
 - [ ] **Implement clock factory** — Create a `createClock(mode: 'performance' | 'hrtime')` function that returns the appropriate `now()` implementation based on the `clockMode` option. | Status: not_done
 - [ ] **Write clock tests** — Test monotonicity (successive calls return non-decreasing values). Test that both modes produce values in milliseconds. Test that resolution is sub-millisecond. | Status: not_done
 
@@ -47,20 +47,20 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 
 ## Phase 4: AsyncLocalStorage Context (src/context.ts)
 
-- [ ] **Implement span context with AsyncLocalStorage** — Create an `AsyncLocalStorage`-based context that tracks the current active span. Export `getCurrentSpan()` to retrieve the current parent span and `runWithSpan(span, fn)` to execute a function within a span's context. | Status: not_done
-- [ ] **Handle nested async contexts** — Ensure that nested `runWithSpan()` calls correctly set and restore the parent span, including across `await` boundaries and concurrent async operations. | Status: not_done
+- [x] **Implement span context with AsyncLocalStorage** — Create an `AsyncLocalStorage`-based context that tracks the current active span. Export `getCurrentSpan()` to retrieve the current parent span and `runWithSpan(span, fn)` to execute a function within a span's context. | Status: done
+- [x] **Handle nested async contexts** — Ensure that nested `runWithSpan()` calls correctly set and restore the parent span, including across `await` boundaries and concurrent async operations. | Status: done
 - [ ] **Write context tests** — Test: nested sync calls inherit parent correctly. Test: nested async calls inherit parent correctly. Test: concurrent async calls have independent context (span A's children do not appear in span B). Test: `getCurrentSpan()` returns `undefined` when no span is active. | Status: not_done
 
 ---
 
 ## Phase 5: Span Implementation (src/span.ts)
 
-- [ ] **Implement ActiveSpan class** — Create a class implementing the `ActiveSpan` interface. Constructor takes name, type, start time, parent ID. Track internal mutable state for attributes, error, endTime. | Status: not_done
+- [x] **Implement ActiveSpan class** — Create a class implementing the `ActiveSpan` interface. Constructor takes name, type, start time, parent ID. Track internal mutable state for attributes, error, endTime. | Status: done
 - [ ] **Implement ActiveSpan.end()** — Record `endTime` using the clock, compute `duration`. Second call is a silent no-op. Accept optional `SpanEndOptions` to merge final attributes and error info. | Status: not_done
 - [ ] **Implement ActiveSpan.setTTFT()** — Accept a `ttftMs` number. Only meaningful for `streaming` spans; silently ignored on other types. Store the value in the span's `StreamingAttributes`. | Status: not_done
-- [ ] **Implement ActiveSpan.addAttributes()** — Merge partial attributes into the span's existing attributes object. Can be called multiple times; attributes are merged, not replaced. | Status: not_done
-- [ ] **Implement Span serialization** — Implement a method or utility to convert an `ActiveSpan` (mutable, internal) to a `Span` (immutable, public) for the profile output. Include the `children` array. | Status: not_done
-- [ ] **Implement span error recording** — When the wrapped function throws, record the error message, code, and stack on the span. Set `endTime` to the moment of the throw. Re-throw the error to the caller. | Status: not_done
+- [x] **Implement ActiveSpan.addAttributes()** — Merge partial attributes into the span's existing attributes object. Can be called multiple times; attributes are merged, not replaced. | Status: done
+- [x] **Implement Span serialization** — Implement a method or utility to convert an `ActiveSpan` (mutable, internal) to a `Span` (immutable, public) for the profile output. Include the `children` array. | Status: done
+- [x] **Implement span error recording** — When the wrapped function throws, record the error message, code, and stack on the span. Set `endTime` to the moment of the throw. Re-throw the error to the caller. | Status: done
 - [ ] **Write span unit tests** — Test: span creation with correct name, type, startTime. Test: `end()` sets endTime and duration. Test: `end()` called twice is a no-op. Test: `setTTFT()` on streaming span records correctly. Test: `setTTFT()` on non-streaming span is ignored. Test: `addAttributes()` merges attributes. Test: error recording on throw. | Status: not_done
 
 ---
@@ -69,29 +69,29 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 
 - [ ] **Implement createProfiler() factory** — Accept `ProfilerOptions`, apply defaults, resolve environment variable overrides (PROFILER_ENABLED, PROFILER_OTLP_ENDPOINT, PROFILER_OTLP_SERVICE_NAME, PROFILER_MIN_SPAN_MS). Return a `Profiler` instance. | Status: not_done
 - [ ] **Implement configuration resolution order** — Apply: built-in defaults (lowest) -> options argument -> environment variables (highest). | Status: not_done
-- [ ] **Implement profiler.span()** — Accept `name`, `fn`, and optional `SpanOptions`. Use `context.ts` to infer parent span. Create an `ActiveSpan`, run `fn` within the span's context via `runWithSpan()`, record endTime on completion or error. Return `fn`'s result. Handle both sync and async `fn`. | Status: not_done
-- [ ] **Implement profiler.startSpan()** — Accept `name` and optional `SpanOptions`. Create an `ActiveSpan` and register it. Use `context.ts` for parent inference if `parentId` is not explicitly provided. Return the `ActiveSpan`. | Status: not_done
-- [ ] **Implement parent-child span nesting** — When `profiler.span()` is called inside another `profiler.span()`, the inner span automatically becomes a child of the outer span (via AsyncLocalStorage context). Add child to parent's `children` array. Set child's `parentId`. | Status: not_done
-- [ ] **Implement profiler.getProfile()** — Build and return a `Profile` object: generate UUID for profile ID, set `startTimestamp` (ISO 8601), compute `totalDurationMs` from root span or first/last span, build span tree, compute metrics. | Status: not_done
-- [ ] **Implement profiler.reset()** — Clear all recorded spans and timing data. Reset internal state so the profiler is ready for a new chain execution. Do not change configuration. | Status: not_done
+- [x] **Implement profiler.span()** — Accept `name`, `fn`, and optional `SpanOptions`. Use `context.ts` to infer parent span. Create an `ActiveSpan`, run `fn` within the span's context via `runWithSpan()`, record endTime on completion or error. Return `fn`'s result. Handle both sync and async `fn`. | Status: done
+- [x] **Implement profiler.startSpan()** — Accept `name` and optional `SpanOptions`. Create an `ActiveSpan` and register it. Use `context.ts` for parent inference if `parentId` is not explicitly provided. Return the `ActiveSpan`. | Status: done
+- [x] **Implement parent-child span nesting** — When `profiler.span()` is called inside another `profiler.span()`, the inner span automatically becomes a child of the outer span (via AsyncLocalStorage context). Add child to parent's `children` array. Set child's `parentId`. | Status: done
+- [x] **Implement profiler.getProfile()** — Build and return a `Profile` object: generate UUID for profile ID, set `startTimestamp` (ISO 8601), compute `totalDurationMs` from root span or first/last span, build span tree, compute metrics. | Status: done
+- [x] **Implement profiler.reset()** — Clear all recorded spans and timing data. Reset internal state so the profiler is ready for a new chain execution. Do not change configuration. | Status: done
 - [ ] **Implement profiler.enable() and profiler.disable()** — When disabled: `span()` calls `fn()` directly with no timing; `startSpan()` returns a no-op `ActiveSpan`; `instrument()` returns the original client; `getProfile()` returns an empty profile. When re-enabled, resume normal recording. | Status: not_done
-- [ ] **Implement profiler.isEnabled()** — Return the current enabled state as a boolean. | Status: not_done
+- [x] **Implement profiler.isEnabled()** — Return the current enabled state as a boolean. | Status: done
 - [ ] **Implement no-op ActiveSpan** — Create a lightweight no-op implementation of `ActiveSpan` where `end()`, `setTTFT()`, and `addAttributes()` are empty functions. Used when the profiler is disabled. | Status: not_done
 - [ ] **Implement PROFILER_ENABLED env var support** — Read `PROFILER_ENABLED` from `process.env`. Accept values `true`, `false`, `1`, `0`. Override the `enabled` option from `ProfilerOptions`. | Status: not_done
 - [ ] **Implement profiler.setAsActive()** — Store this profiler instance as the global active profiler for use by the `@profile` decorator. | Status: not_done
-- [ ] **Implement profiler.toJSON()** — Serialize the complete `Profile` object to a JSON string. Ensure the output is stable and can be deserialized back to a `Profile`. | Status: not_done
+- [x] **Implement profiler.toJSON()** — Serialize the complete `Profile` object to a JSON string. Ensure the output is stable and can be deserialized back to a `Profile`. | Status: done
 - [ ] **Write core profiler tests** — Test: `createProfiler()` with default options. Test: `span()` with sync fn. Test: `span()` with async fn. Test: `span()` where fn throws (error recorded, error re-thrown). Test: nested `span()` calls produce correct parent-child relationships. Test: concurrent async spans are tracked independently. Test: `startSpan()` / `end()` pattern. Test: `reset()` clears all spans. Test: `disable()` makes span() a no-op. Test: `enable()` after `disable()` resumes recording. Test: `PROFILER_ENABLED=false` disables the profiler. Test: `getProfile()` returns correct structure. Test: `toJSON()` produces valid JSON matching `getProfile()`. | Status: not_done
 
 ---
 
 ## Phase 7: Overhead Computation and Metrics (src/metrics.ts)
 
-- [ ] **Implement computeMetrics()** — Accept a flat array of spans and the root span. Compute all `TimingMetrics` fields: totals by span type, token counts, call counts, TTFT, average TPS. | Status: not_done
+- [x] **Implement computeMetrics()** — Accept a flat array of spans and the root span. Compute all `TimingMetrics` fields: totals by span type, token counts, call counts, TTFT, average TPS. | Status: done
 - [ ] **Implement overhead gap detection** — For each parent span, examine its children in start-time order. Compute gaps between consecutive sibling spans (`children[i+1].startTime - children[i].endTime`). Generate synthetic `overhead` spans for gaps. | Status: not_done
-- [ ] **Implement percentageByType computation** — For each `SpanType`, sum durations of all spans of that type and compute their percentage of `totalDurationMs`. Include `overhead` in the breakdown. | Status: not_done
-- [ ] **Implement firstTtftMs extraction** — Find the first `streaming` span and read its `ttftMs` attribute. | Status: not_done
-- [ ] **Implement averageTps computation** — Average the `tps` values across all `streaming` spans that have a non-undefined `tps` attribute. | Status: not_done
-- [ ] **Implement token count aggregation** — Sum `inputTokens` and `outputTokens` across all `llm-call` spans. Count total `llm-call` and `tool-execution` spans. | Status: not_done
+- [x] **Implement percentageByType computation** — For each `SpanType`, sum durations of all spans of that type and compute their percentage of `totalDurationMs`. Include `overhead` in the breakdown. | Status: done
+- [x] **Implement firstTtftMs extraction** — Find the first `streaming` span and read its `ttftMs` attribute. | Status: done
+- [x] **Implement averageTps computation** — Average the `tps` values across all `streaming` spans that have a non-undefined `tps` attribute. | Status: done
+- [x] **Implement token count aggregation** — Sum `inputTokens` and `outputTokens` across all `llm-call` spans. Count total `llm-call` and `tool-execution` spans. | Status: done
 - [ ] **Handle edge cases in metrics** — Handle: no spans recorded (return zeroed metrics). Handle: spans with undefined duration (exclude from calculations). Handle: no streaming spans (TTFT and TPS are undefined). | Status: not_done
 - [ ] **Write metrics tests** — Test: single span produces correct metrics. Test: multiple span types produce correct per-type totals and percentages. Test: overhead gaps are computed correctly between siblings. Test: TTFT is extracted from first streaming span. Test: average TPS across multiple streaming spans. Test: token aggregation across multiple llm-call spans. Test: empty profile returns zeroed metrics. Test: spans with undefined duration are excluded. | Status: not_done
 
@@ -102,15 +102,15 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 - [ ] **Implement tree renderer** — Render the span tree as an indented text tree. Each line shows: span type icon, span type and name, duration in ms, percentage of total time. Indent children under their parent. | Status: not_done
 - [ ] **Implement ANSI color coding** — Apply colors per spec: spans >50% of total in yellow, >80% in red, overhead spans in dim gray, TTFT values in cyan, token counts in dim. | Status: not_done
 - [ ] **Implement color auto-detection** — Default to ANSI colors when `stdout.isTTY` is true and `NO_COLOR` env var is not set. Respect the `color` option in `ReportOptions`. | Status: not_done
-- [ ] **Implement report header** — Print a header line: `llm-chain-profiler: <name>  <totalDurationMs>ms total` followed by a separator line. | Status: not_done
+- [x] **Implement report header** — Print a header line: `llm-chain-profiler: <name>  <totalDurationMs>ms total` followed by a separator line. | Status: done
 - [ ] **Implement summary block** — After the tree, print a summary section showing: total chain time, LLM call time (with TTFT and streaming sub-breakdown), retrieval time, prompt assembly time, post-processing time, overhead time, token counts, call counts. | Status: not_done
 - [ ] **Implement verbosity: 'summary' mode** — Render a single-line summary: `<name>  <totalMs>ms  (TTFT: <ttft>ms, TPS: <tps>, <in>/<out> tokens, <n> LLM call(s))`. | Status: not_done
 - [ ] **Implement verbosity: 'detailed' mode** — Render the full tree plus span attributes and metadata below each span line (e.g., messageCount, estimatedTokenCount, model, inputTokens, outputTokens). | Status: not_done
-- [ ] **Implement showOverhead option** — When `showOverhead: false`, omit overhead spans from the tree output. | Status: not_done
+- [x] **Implement showOverhead option** — When `showOverhead: false`, omit overhead spans from the tree output. | Status: done
 - [ ] **Implement minDurationMs filtering** — Omit spans below `minDurationMs` threshold from the terminal tree. Collapse them into their parent. Does not affect JSON or flame chart output. | Status: not_done
 - [ ] **Implement custom output stream** — Write report output to `options.output` (WritableStream) instead of `process.stdout` when provided. | Status: not_done
 - [ ] **Implement empty profile handling** — When no spans are recorded, print a "no data" message instead of an empty tree. Do not throw. | Status: not_done
-- [ ] **Connect report.ts to profiler** — Implement `profiler.report(options?)` by calling the report renderer with the current profile. | Status: not_done
+- [x] **Connect report.ts to profiler** — Implement `profiler.report(options?)` by calling the report renderer with the current profile. | Status: done
 - [ ] **Write report tests** — Test: tree output contains all span names and durations. Test: `verbosity: 'summary'` produces single-line output. Test: `color: false` produces no ANSI escape codes. Test: overhead spans appear/disappear with `showOverhead`. Test: `minDurationMs` filters short spans. Test: empty profile prints "no data" message. Test: output goes to custom stream when provided. | Status: not_done
 
 ---
@@ -254,5 +254,5 @@ This file tracks all tasks required to implement `llm-chain-profiler` per the SP
 - [ ] **Run build** — Execute `npm run build` and verify TypeScript compiles with no errors and produces correct `dist/` output. | Status: not_done
 - [ ] **Verify dist output** — Check that `dist/index.js` and `dist/index.d.ts` exist and contain all expected exports. Verify `dist/index.d.ts` exposes all public types correctly. | Status: not_done
 - [ ] **Verify package.json completeness** — Ensure `name`, `version`, `description`, `main`, `types`, `files`, `keywords`, `license`, `engines`, `peerDependencies`, and `publishConfig` are all correctly set. Add relevant keywords (profiler, llm, latency, flame-chart, ttft, streaming, openai, anthropic). | Status: not_done
-- [ ] **Version bump** — Bump version to `0.1.0` (or appropriate version) in `package.json` if not already set. | Status: not_done
+- [x] **Version bump** — Bump version to `0.1.0` (or appropriate version) in `package.json` if not already set. | Status: done
 - [ ] **Dry-run npm publish** — Run `npm publish --dry-run` to verify the package would publish correctly with the expected files. | Status: not_done
